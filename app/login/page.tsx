@@ -110,7 +110,7 @@ export default function LoginPage() {
               variant="body2"
               sx={{ mr: 2 }}
             >
-              Don't have an account? Sign Up
+              Don&apos;t have an account? Sign Up
             </Link>
             <Link href="/forgot-password" variant="body2">
               Forgot password?
