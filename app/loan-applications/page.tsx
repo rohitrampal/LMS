@@ -24,6 +24,8 @@ import {
   FormControl,
   InputLabel,
   Chip,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import { Add, Edit, Visibility } from '@mui/icons-material';
 import { useStore } from '@/store/useStore';
@@ -31,6 +33,8 @@ import { generateId, generateApplicationNumber, formatCurrency, formatDate } fro
 import type { LoanStatus } from '@/types';
 
 export default function LoanApplicationsPage() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const {
     loanApplications,
     accounts,
@@ -188,8 +192,22 @@ export default function LoanApplicationsPage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" fontWeight="bold">
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: { xs: 'flex-start', sm: 'center' },
+        flexDirection: { xs: 'column', sm: 'row' },
+        gap: { xs: 2, sm: 0 },
+        mb: { xs: 2, sm: 3 } 
+      }}>
+        <Typography 
+          variant="h4" 
+          fontWeight="bold"
+          sx={{ 
+            fontSize: { xs: '1.5rem', sm: '2rem' },
+            wordBreak: 'break-word',
+          }}
+        >
           Loan Applications
         </Typography>
         {canEdit && (
@@ -197,13 +215,34 @@ export default function LoanApplicationsPage() {
             variant="contained"
             startIcon={<Add />}
             onClick={() => handleOpen()}
+            size={isMobile ? 'small' : 'medium'}
+            sx={{ width: { xs: '100%', sm: 'auto' }, minWidth: { xs: 'auto', sm: 160 } }}
           >
             New Application
           </Button>
         )}
       </Box>
 
-      <TableContainer component={Paper}>
+      <TableContainer 
+        component={Paper}
+        sx={{ 
+          overflowX: 'auto',
+          width: '100%',
+          '& .MuiTable-root': {
+            minWidth: 650,
+          },
+          '&::-webkit-scrollbar': {
+            height: 8,
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'rgba(0,0,0,0.1)',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            borderRadius: 4,
+          },
+        }}
+      >
         <Table>
           <TableHead>
             <TableRow>
@@ -260,7 +299,19 @@ export default function LoanApplicationsPage() {
         </Table>
       </TableContainer>
 
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <Dialog 
+        open={open} 
+        onClose={handleClose} 
+        maxWidth="sm" 
+        fullWidth
+        fullScreen={isMobile}
+        sx={{
+          '& .MuiDialog-paper': {
+            m: { xs: 0, sm: 2 },
+            maxHeight: { xs: '100%', sm: '90vh' },
+          },
+        }}
+      >
         <DialogTitle>{selectedApplication ? 'Edit Application' : 'New Application'}</DialogTitle>
         <DialogContent>
           {error && (
@@ -323,7 +374,19 @@ export default function LoanApplicationsPage() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={viewOpen} onClose={handleClose} maxWidth="md" fullWidth>
+      <Dialog 
+        open={viewOpen} 
+        onClose={handleClose} 
+        maxWidth="md" 
+        fullWidth
+        fullScreen={isMobile}
+        sx={{
+          '& .MuiDialog-paper': {
+            m: { xs: 0, sm: 2 },
+            maxHeight: { xs: '100%', sm: '90vh' },
+          },
+        }}
+      >
         <DialogTitle>Application Details</DialogTitle>
         <DialogContent>
           {selectedApplication && (

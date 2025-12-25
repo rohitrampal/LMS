@@ -23,12 +23,16 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import { useStore } from '@/store/useStore';
 import { generateId, formatCurrency } from '@/utils/helpers';
 
 export default function LoanProductsPage() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { loanProducts, loanCategories, currentUser, addLoanProduct, updateLoanProduct, deleteLoanProduct } = useStore();
   const [open, setOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
@@ -133,8 +137,21 @@ export default function LoanProductsPage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" fontWeight="bold">
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: { xs: 'flex-start', sm: 'center' },
+        flexDirection: { xs: 'column', sm: 'row' },
+        gap: { xs: 2, sm: 0 },
+        mb: { xs: 2, sm: 3 } 
+      }}>
+        <Typography 
+          variant="h4" 
+          fontWeight="bold"
+          sx={{ 
+            fontSize: { xs: '1.5rem', sm: '2rem' },
+          }}
+        >
           Loan Products
         </Typography>
         {canEdit && (
@@ -142,13 +159,34 @@ export default function LoanProductsPage() {
             variant="contained"
             startIcon={<Add />}
             onClick={() => handleOpen()}
+            size={isMobile ? 'small' : 'medium'}
+            sx={{ width: { xs: '100%', sm: 'auto' }, minWidth: { xs: 'auto', sm: 140 } }}
           >
             Add Product
           </Button>
         )}
       </Box>
 
-      <TableContainer component={Paper}>
+      <TableContainer 
+        component={Paper}
+        sx={{ 
+          overflowX: 'auto',
+          width: '100%',
+          '& .MuiTable-root': {
+            minWidth: 800,
+          },
+          '&::-webkit-scrollbar': {
+            height: 8,
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'rgba(0,0,0,0.1)',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            borderRadius: 4,
+          },
+        }}
+      >
         <Table>
           <TableHead>
             <TableRow>
@@ -188,7 +226,19 @@ export default function LoanProductsPage() {
         </Table>
       </TableContainer>
 
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <Dialog 
+        open={open} 
+        onClose={handleClose} 
+        maxWidth="sm" 
+        fullWidth
+        fullScreen={isMobile}
+        sx={{
+          '& .MuiDialog-paper': {
+            m: { xs: 0, sm: 2 },
+            maxHeight: { xs: '100%', sm: '90vh' },
+          },
+        }}
+      >
         <DialogTitle>{editingProduct ? 'Edit Product' : 'Add Product'}</DialogTitle>
         <DialogContent>
           {error && (

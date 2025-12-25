@@ -22,12 +22,16 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import { Add, Visibility } from '@mui/icons-material';
 import { useStore } from '@/store/useStore';
 import { generateId, generateApplicationNumber, formatCurrency, formatDate, generateRepaymentSchedule } from '@/utils/helpers';
 
 export default function LoanDisbursementsPage() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const {
     loanDisbursements,
     loanApplications,
@@ -174,8 +178,21 @@ export default function LoanDisbursementsPage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" fontWeight="bold">
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: { xs: 'flex-start', sm: 'center' },
+        flexDirection: { xs: 'column', sm: 'row' },
+        gap: { xs: 2, sm: 0 },
+        mb: { xs: 2, sm: 3 } 
+      }}>
+        <Typography 
+          variant="h4" 
+          fontWeight="bold"
+          sx={{ 
+            fontSize: { xs: '1.5rem', sm: '2rem' },
+          }}
+        >
           Loan Disbursements
         </Typography>
         {canEdit && approvedApplications.length > 0 && (
@@ -183,13 +200,34 @@ export default function LoanDisbursementsPage() {
             variant="contained"
             startIcon={<Add />}
             onClick={() => handleOpen()}
+            size={isMobile ? 'small' : 'medium'}
+            sx={{ width: { xs: '100%', sm: 'auto' }, minWidth: { xs: 'auto', sm: 170 } }}
           >
             New Disbursement
           </Button>
         )}
       </Box>
 
-      <TableContainer component={Paper}>
+      <TableContainer 
+        component={Paper}
+        sx={{ 
+          overflowX: 'auto',
+          width: '100%',
+          '& .MuiTable-root': {
+            minWidth: 600,
+          },
+          '&::-webkit-scrollbar': {
+            height: 8,
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'rgba(0,0,0,0.1)',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            borderRadius: 4,
+          },
+        }}
+      >
         <Table>
           <TableHead>
             <TableRow>
@@ -220,7 +258,19 @@ export default function LoanDisbursementsPage() {
         </Table>
       </TableContainer>
 
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <Dialog 
+        open={open} 
+        onClose={handleClose} 
+        maxWidth="sm" 
+        fullWidth
+        fullScreen={isMobile}
+        sx={{
+          '& .MuiDialog-paper': {
+            m: { xs: 0, sm: 2 },
+            maxHeight: { xs: '100%', sm: '90vh' },
+          },
+        }}
+      >
         <DialogTitle>New Disbursement</DialogTitle>
         <DialogContent>
           {error && (
@@ -269,7 +319,19 @@ export default function LoanDisbursementsPage() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={viewOpen} onClose={handleClose} maxWidth="md" fullWidth>
+      <Dialog 
+        open={viewOpen} 
+        onClose={handleClose} 
+        maxWidth="md" 
+        fullWidth
+        fullScreen={isMobile}
+        sx={{
+          '& .MuiDialog-paper': {
+            m: { xs: 0, sm: 2 },
+            maxHeight: { xs: '100%', sm: '90vh' },
+          },
+        }}
+      >
         <DialogTitle>Disbursement Details</DialogTitle>
         <DialogContent>
           {selectedDisbursement && (

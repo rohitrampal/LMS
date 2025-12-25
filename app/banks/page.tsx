@@ -160,7 +160,26 @@ export default function BanksPage() {
         )}
       </Box>
 
-      <TableContainer component={Paper}>
+      <TableContainer 
+        component={Paper}
+        sx={{ 
+          overflowX: 'auto',
+          width: '100%',
+          '& .MuiTable-root': {
+            minWidth: 800,
+          },
+          '&::-webkit-scrollbar': {
+            height: 8,
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'rgba(0,0,0,0.1)',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            borderRadius: 4,
+          },
+        }}
+      >
         <Table>
           <TableHead>
             <TableRow>
@@ -204,7 +223,19 @@ export default function BanksPage() {
         </Table>
       </TableContainer>
 
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <Dialog 
+        open={open} 
+        onClose={handleClose} 
+        maxWidth="sm" 
+        fullWidth
+        fullScreen={isMobile}
+        sx={{
+          '& .MuiDialog-paper': {
+            m: { xs: 0, sm: 2 },
+            maxHeight: { xs: '100%', sm: '90vh' },
+          },
+        }}
+      >
         <DialogTitle>{editingBank ? 'Edit Bank' : 'Add Bank'}</DialogTitle>
         <DialogContent>
           {error && (
