@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Drawer,
@@ -10,7 +10,6 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
-  IconButton,
   Box,
   Typography,
   Divider,
@@ -18,7 +17,6 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import {
-  Menu as MenuIcon,
   Dashboard,
   People,
   AccountBalance,
@@ -91,17 +89,17 @@ const getModulePath = (module: string): string => {
   return pathMap[module] || "/dashboard";
 };
 
-export default function Sidebar() {
+interface SidebarProps {
+  mobileOpen: boolean;
+  onDrawerToggle: () => void;
+}
+
+export default function Sidebar({ mobileOpen, onDrawerToggle }: SidebarProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { currentUser } = useStore();
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
 
   if (!currentUser) return null;
 
@@ -136,7 +134,7 @@ export default function Sidebar() {
                 selected={isActive}
                 onClick={() => {
                   router.push(path);
-                  if (isMobile) setMobileOpen(false);
+                  if (isMobile) onDrawerToggle();
                 }}
                 sx={{
                   "&.Mui-selected": {
@@ -172,21 +170,10 @@ export default function Sidebar() {
       component="nav"
       sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
     >
-      {isMobile && (
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          edge="start"
-          onClick={handleDrawerToggle}
-          sx={{ position: "fixed", top: 16, left: 16, zIndex: 1300 }}
-        >
-          <MenuIcon />
-        </IconButton>
-      )}
       <Drawer
         variant={isMobile ? "temporary" : "permanent"}
         open={isMobile ? mobileOpen : true}
-        onClose={handleDrawerToggle}
+        onClose={onDrawerToggle}
         ModalProps={{
           keepMounted: true, // Better open performance on mobile.
         }}
@@ -194,6 +181,7 @@ export default function Sidebar() {
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: drawerWidth,
+            zIndex: (theme) => theme.zIndex.drawer,
           },
         }}
       >

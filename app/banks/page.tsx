@@ -21,12 +21,16 @@ import {
   Switch,
   FormControlLabel,
   Alert,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import { Add, Edit, Delete, CheckCircle, Cancel } from '@mui/icons-material';
 import { useStore } from '@/store/useStore';
 import { generateId } from '@/utils/helpers';
 
 export default function BanksPage() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { banks, currentUser, addBank, updateBank, deleteBank, addUser } = useStore();
   const [open, setOpen] = useState(false);
   const [editingBank, setEditingBank] = useState<any>(null);
@@ -132,8 +136,15 @@ export default function BanksPage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" fontWeight="bold">
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: { xs: 'flex-start', sm: 'center' },
+        flexDirection: { xs: 'column', sm: 'row' },
+        gap: { xs: 2, sm: 0 },
+        mb: 3 
+      }}>
+        <Typography variant="h4" fontWeight="bold" sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
           Banks
         </Typography>
         {canEdit && (
@@ -141,6 +152,8 @@ export default function BanksPage() {
             variant="contained"
             startIcon={<Add />}
             onClick={() => handleOpen()}
+            size={isMobile ? 'small' : 'medium'}
+            sx={{ width: { xs: '100%', sm: 'auto' } }}
           >
             Add Bank
           </Button>

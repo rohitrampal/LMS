@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Box, Container } from '@mui/material';
 import { useStore } from '@/store/useStore';
@@ -11,6 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { currentUser, isAuthenticated, initializeDummyData } = useStore();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     initializeDummyData();
@@ -22,6 +23,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       router.push('/login');
     }
   }, [isAuthenticated, pathname, router]);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   const publicPaths = ['/login', '/signup', '/forgot-password'];
   const isPublicPath = publicPaths.includes(pathname);
@@ -36,13 +41,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      <Navbar />
-      <Sidebar />
+      <Navbar onMenuClick={handleDrawerToggle} />
+      <Sidebar mobileOpen={mobileOpen} onDrawerToggle={handleDrawerToggle} />
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          p: { xs: 2, sm: 3 },
           width: { md: `calc(100% - 260px)` },
           mt: '64px',
         }}
